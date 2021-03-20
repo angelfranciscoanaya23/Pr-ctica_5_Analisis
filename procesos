@@ -1,0 +1,129 @@
+def multiplicacion_matrices(m1, m2):
+    if len(m1[0]) == len(m2):
+        m3 = []
+        for i in range(len(m1)):
+            m3.append([])
+            for j in range(len(m2[0])):
+                m3[i].append(0)
+        
+        for i in range(len(m1)):
+            for j in range(len(m2[0])):
+                for k in range(len(m1[0])):
+                    m3[i][j] += round(m1[i][k]*m2[k][j], 3)
+    return m3
+
+def bienvenida():
+    alumnos = '''
+    UNIVERSIDAD NACIONAL AUTONOMA DE MEXICO
+    FACULTAD DE ESTUDIOS SUPERIORES ACATLAN
+    Matematicas Aplicadas y Computaciòn.
+
+    Integrantes:
+    García Olarra Sebastián
+    González Briones Miguel Ariel
+    Fernández Moreno Alan
+    Pérez Anaya Angel Francisco
+        '''
+    print(alumnos)
+    return 0
+
+def imprimir_matriz(matriz):
+    for fila in matriz:
+        print("[", end = "")
+        for elemento in fila:
+            print("{:8.3f}".format(elemento), end = " ")
+        print("]")
+    print()
+
+    return 0
+
+def entrada_matriz():
+    '''
+    Entrada: Número de estados
+             Matriz de transicion
+    Salida: Una matriz de tamaño de numero de estados
+    '''
+    dimension = int(input("Introduce número de estados: "))
+
+    matriz = []
+    for i in range(dimension):
+        matriz.append([])
+        for j in range(dimension):
+            valor = float(input("Fila {}, Columna {}: ".format(i, j)))
+            matriz[i].append(valor)
+    print()
+
+    imprimir_matriz(matriz)
+    
+    return matriz
+
+def entrada_valores():
+     '''
+        Entrada:
+            Ningun objeto
+        Proceso:
+            Guardar variables para futuros procesos en el 
+            programa
+        Salida:
+            Estado inicial (i)
+            Estado final (j)
+            Número de periodos (n)
+     '''
+     print("En esta parte vamos a introducir los datos necesarios.")
+     estado_inicial = int(float(input("Estado inicial (i): ")))
+     estado_final = int(float(input("Estado final  (j): ")))
+     periodos = int(float(input("Número de periodos (n): ")))
+     print()
+     print("P(X_t+{} = {} / X_t = {})".format(periodos, estado_final, estado_inicial))
+     print()
+     return estado_inicial, estado_final, periodos
+
+def markov(x, estado_inicial, estado_final, pasos):
+    # x = np.array(x)
+    # pi_cero = np.zeros(len(x))
+    pi_cero = [[0] * len(x)]
+    pi_cero[0][estado_inicial] = 1
+    valores_pi = dict()
+    for i in range(pasos+1):
+        valores_pi["π"+str(i)] = pi_cero[0]
+        print("π ", i , " = ", pi_cero)
+        pi_cero = multiplicacion_matrices(pi_cero, x)
+        if pasos-1 == i:
+            prob = pi_cero[0][estado_final]
+            print()
+            print("---------------------------------------------------------------------------------")
+            print("La probabilidad que se solicita esta dada por la expresion: ")
+            print("P(X_t+{} = {} / X_t = {}) = {}".format(pasos, estado_final, estado_inicial, prob))
+            print("---------------------------------------------------------------------------------")
+            print()
+    return valores_pi, prob
+
+
+def main():
+    bienvenida()
+    input("Enter para continuar ... ")
+    while True:
+        matriz = entrada_matriz()
+        input("Enter para continuar ... ")
+        while True:
+            inicial, final, periodos = entrada_valores()
+            markov(matriz, inicial, final, periodos)
+            print()
+            print("Si quieres hacer otro calculo con la misma matriz de transicion ingresa 1 en cualquier otro caso 0: ")
+            si = input("--> ")
+            if si != "1" and si != '1.0':
+                print("Nos vemos luego.")
+                break
+            print("Bienvenido de nuevo amigo")
+            print()
+        print("¿Deseas cambiar de matriz de transicion ingresa 1 o 0 para salir del programa?")
+        si = input("--> ")
+        if si != "1" and si != '1.0':
+            print("Nos vemos luego.")
+            break
+    return 0
+
+if __name__ == "__main__":
+    main()
+
+
